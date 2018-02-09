@@ -8,9 +8,9 @@ This is purely the frontend and node backend which interfaces with the API.
 ## Getting Started
 
 1. Clone this repository to your desktop
-2. Navigate to the home directory /cryptonite, and run `npm install`
-3. Navigate to /cryptonite/server and run `npm install`
-4. Run `node index.js` in /cryptonite/server to start the node server
+2. Navigate to the home directory /cryptonite/cryptonite, and run `npm install` (The actual cryptonite repo is nested within another folder called cryptonite)
+3. Navigate to ./server and run `npm install`
+4. Run `node index.js` in /server to start the node server
 5. Run `ng serve` in /cryptonite/ for a dev server. Navigate to `http:localhost:4200/`. The app wil automatically reload if you change any of the source files. 
 
 ## Deployment
