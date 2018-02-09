@@ -1,0 +1,298 @@
+<header>
+  <div class="container">
+    <a href="javascript:;" routerLink="" id="Logo">
+      <h1><img src="https://www.btcmarkets.net/images/logo-round.png" alt="Buy Bitcoins"></h1>
+    </a>
+    <nav>
+      <ul id="MainNav">
+        <li><a href="javascript:;" id="homeMenu" routerLink=""><span>Home</span></a></li>
+        <li><a href="/trading" id="tradingMenu"><span>Buy / Sell</span></a></li>
+        <li><a href="/account" id="accountMenu"><span>Account</span></a></li>
+      </ul>
+      <ul id="ThemeSwitcher" class="alt-nav">
+        <li><a id="ThemeSwitchButton">Night Mode</a></li>
+      </ul>
+      <ul id="AltNav" class="alt-nav">
+        <li><a href="/faq" id="faqMenu"><span>FAQs</span></a></li>
+        <li><a href="/news" id="newsMenu"><span>News</span></a></li>
+        <li><a href="/support" id="supportMenu" class="last"><span>Support</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<div id="PageContent" class="container">
+  <section id="AccountOverviewPage">
+    <div id="SubMenu">
+      <a href="javascript:;" (click)="accountView()">Overview</a>
+      <span>|</span>
+      <a href="javascript:;" (click)="taxView()">Tax Analysis</a>
+      <span>|</span>
+      <a href="/account/deposit">Deposit</a>
+      <span>|</span>
+      <a href="/account/withdraw">Withdraw</a>
+      <span>|</span>
+      <a href="/account/profile">Profile</a>
+      <span>|</span>
+      <a href="/account/twoFactorAuth">Two-Factor Authentication</a>
+      <span>|</span>
+      <a href="/account/idCheck" id="IdCheckLink">ID Verification</a>
+      <span>|</span>
+      <a href="/account/apikey">API Key</a>
+      <span>|</span>
+      <a href="/account/changepassword">Change Password</a>
+      
+    </div>
+    <div class="col-md-8" [hidden]="taxActive">
+      <h2>Overview</h2>
+      <table id="AccountOverview" class="data-table">
+        <tr>
+          <th>Account Name:</th>
+          <td>
+            <span id="AccountFullName">John Citizen</span>
+          </td>
+        </tr>
+        <tr>
+          <th>30 Day Trading Volume:</th>
+          <td>
+            <span id="TradingVolume30Days">$0</span>
+          </td>
+        </tr>
+        <tr>
+          <th>Trading Fee:</th>
+          <td>
+            <span id="TradingFee">0.85%</span>
+          </td>
+        </tr>
+      </table>
+      <div id="AccountSetup">
+        <h4>Account Setup
+          <span id="AccountSetupStatus"></span>
+        </h4>
+        <div class="step">
+          <div class="description">
+            1. Verify Email Address
+          </div>
+          <div class="icon tick-icon"></div>
+        </div>
+        <div id="CompleteProfileStep" class="step">
+          <div class="description">
+            2. Complete Profile
+          </div>
+          <div id="ProfileStatus" class="icon"></div>
+        </div>
+        <div id="IdVerificationStep" class="step">
+          <div class="description">
+            3. Verify Identity
+          </div>
+          <div id="AccountIdStatus" class="icon"></div>
+        </div>
+      </div>
+      <div id="ImproveSecurity">
+        <h4>Improve Security</h4>
+        <div id="MobilePhoneStep" class="step">
+          <div class="description">
+            <span class="help-icon" title="Adding your phone number can prevent you from being locked out of your account.">Add Mobile Phone Number</span>
+          </div>
+          <div id="MobileNumberStatus" class="icon"></div>
+        </div>
+        <div id="TwoFactorAuthStep" class="step">
+          <div class="description"> Enable Two Factor Authentication
+          </div>
+          <div id="TwoFactorAuthStatus" class="icon"></div>
+        </div>
+      </div>
+      <div id="LimitTableContainer">
+        <h4>Account Transaction Daily Limits</h4>
+        <table id="LimitTable" class="data-table">
+          <thead>
+            <tr>
+              <th>Level</th>
+              <th>POLi Deposit</th>
+              <th>BPAY Deposit</th>
+              <th>AUD Withdrawal</th>
+              <th>Crypto Deposit</th>
+              <th>Crypto Withdrawal</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+          <tfoot>
+          </tfoot>
+        </table>
+      </div>
+      <h4>Account Summary</h4>
+      <table id="BalanceListTable" class="data-table">
+        <thead>
+          <tr>
+            <th>Currency</th>
+            <th>Available Balance</th>
+            <th>Funds in Orders</th>
+            <th>Receive Funds</th>
+            <th>Send Funds</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+          <tr class="even">
+            <th>Total equity in AUD (Est.)</th>
+            <th id="TotalEquityCell"></th>
+          </tr>
+        </tfoot>
+      </table>
+      <div id="accountOverviewPanel"></div>
+      <div id="kycSummaryWrapper"></div>
+      <div id="VoucherPanel" class="box">
+        <h4>Voucher Code</h4>
+        <p>From time to time we have promotions. If you have a voucher code please enter it below:</p>
+        <form id="VoucherForm" class="horizontal-form">
+          <fieldset>
+            <div class="form-element">
+              <input type="text" id="VoucherCode" />
+              <a href="javascript:void(0)" class="button primary" id="ProcessVoucherCode">Process</a>
+              <img alt="Loading Image" id="LoadingImg" class="loading-image" src="/images/loading.gif" />
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="container">
+      <app-tax [hidden]="!taxActive"></app-tax>
+      <!-- <div [hidden]="!taxActive" class="account-page headers-font tax-tab">
+        <div class="row-fluid tab-accounts">
+          <div class="span8">
+            <h2 class="underlined">
+              Taxable Income Analysis
+              <a href="javascript:void(0);" class="info-tooltip pull-right" data-toggle="popover" title="" data-content="Balances of your USD, AUD, NZD, XBT, ETH and BCH accounts in Independent Reserve. The difference between 'Total' and 'Available' amounts corresponds to any deposits or withdrawals which are still being processed or to open limit orders you have placed on the market." data-trigger="hover" data-html="true" data-placement="left" tabindex="-1" data-ir-popover="" data-original-title="Account Balance">
+                <i class="ir-icon ir-info"></i>
+              </a>
+              <span class="last-updated-control pull-right accounts-control-last-updated" data-last-updated="16:30:38"><i class="ir-icon ir-warning warning-button hide" data-ir-popover="" data-original-title="" title=""></i><a href="javascript:void(0)" class="refresh-button" data-toggle="refresh-button"><i class="ir-icon ir-refresh" data-ir-popover="" data-original-title="" title=""></i></a></span>
+            </h2>
+            <div class='float-right' >
+              <button (click)="generateTransactions()" class='b-btn b-btn-info btn-sm btn btn-primary' >Randomise Transaction History</button>
+            </div>
+            <h4 class='tax-subheader'>select coins to analyse their trades</h4>
+          </div>
+          
+        </div>
+        <div class="alert-box">
+          <p *ngFor="let alert of alerts">
+            <ngb-alert [type]="alert.type" (close)="closeAlert(alert)">{{ alert.message }}</ngb-alert>
+          </p>  
+        </div>
+        
+        <form action="#">
+          <p>
+            <input type="checkbox" id="test1" (click)="switch('eth')" />
+            <label for="test1">ETH<span [hidden]="!processed" class='light-blue'>&nbsp;{{ ethTotal | currency}}</span></label>
+            <ngb-progressbar type="success" id=''  [hidden]="!processed" height="10px" [value]="ethTotal/taxableIncome*100"></ngb-progressbar>
+          </p>
+          <p>
+            <input type="checkbox" id="test2" (click)="switch('xbt')" />
+            <label for="test2">XBT <span [hidden]="!processed" class='light-blue float-right'>&nbsp;{{ xbtTotal | currency}}</span></label>
+            <ngb-progressbar type="info"  [hidden]="!processed" height="10px" [value]="xbtTotal/taxableIncome*100"></ngb-progressbar>
+          </p>
+          <p>
+            <input type="checkbox" id="test3" (click)="switch('bch')" />
+            <label for="test3">BCH<span [hidden]="!processed" class='light-blue'>&nbsp;{{ bchTotal | currency}}</span></label>
+            <ngb-progressbar type="warning"  [hidden]="!processed" height="10px" [value]="bchTotal/taxableIncome*100"></ngb-progressbar>
+          </p>
+        </form>
+        
+        <br>
+        <button  class='btn btn-primary text-center analyse-button' 
+        (click)="showData()">Analyse</button>
+        
+        <h4 class='tax-subheader' [hidden]="!processed" >total taxable income: {{ taxableIncome | currency }}</h4>
+        <nvd3 [options]="options" [data]="data"></nvd3>
+        
+      </div> -->
+    </div>
+    
+  </section>
+  <br id="PageContentBottom" />
+</div>
+<footer>
+  <div id="FooterContainer">
+    <div id="TwitterFeed">
+      <a class="twitter-timeline" href="https://twitter.com/BTCMarkets" data-chrome="transparent nofooter" data-widget-id="436847161481756672">Tweets by @BTCMarkets</a>
+      <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + "://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } }(document, "script", "twitter-wjs");</script>
+    </div>
+    <ul class="link-list">
+      <li>
+        <a href="/home">Home</a>
+      </li>
+      <li>
+        <a href="/buy-bitcoins">How To Buy Bitcoins</a>
+      </li>
+      <li>
+        <a href="/aboutBitcoin">What is Bitcoin?</a>
+      </li>
+      <li>
+        <a href="/fees">Fees</a>
+      </li>
+    </ul>
+    <ul class="link-list">
+      <li>
+        <a href="/trading">Buy / Sell</a>
+      </li>
+      <li>
+        <a href="/account">Account</a>
+      </li>
+      <li>
+        <a href="/faq">FAQs</a>
+      </li>
+      <li>
+        <a href="/news">News</a>
+      </li>
+    </ul>
+    <ul class="link-list">
+      <li>
+        <a href="/aboutUs">About Us</a>
+      </li>
+      <li>
+        <a href="/regulation">AML/CTF Policy</a>
+      </li>
+      <li>
+        <a href="https://github.com/BTCMarkets/API">API</a>
+      </li>
+      <li>
+        <a href="/support">Support</a>
+      </li>
+    </ul>
+    <ul class="link-list">
+      <li>
+        <a href="/protectYourself">Protect Yourself Online</a>
+      </li>
+      <li>
+        <a href="/suggestions-complaints">Feedback and Complaints</a>
+      </li>
+    </ul>
+    <a href="http://adcca.org.au/members/" id="ADCCA">
+      <span id="ADCCALogo"></span>
+    </a>
+    <p id="Copyright">&copy; 2018, BTC Markets Pty Ltd. All rights reserved. ACN 164 093 887 ABN 45 164 093 887
+    </p>
+    <div id="Contacts">
+      <ul>
+        <li>
+          <a id="FacebookIcon" href="https://facebook.com/BTCMarkets"></a>
+        </li>
+        <li>
+          <a id="TwitterIcon" href="https://twitter.com/BTCMarkets"></a>
+        </li>
+      </ul>
+    </div>
+    <ul id="PolicyLinks">
+      <li>
+        <a href="/terms-of-service">Terms of Service</a>
+      </li>
+      <li>
+        <a href="/privacy-policy">Privacy Policy</a>
+      </li>
+    </ul>
+  </div>
+  <div>
+  </div>
+</footer>

@@ -1,0 +1,157 @@
+<div class="account-page headers-font tax-tab">
+    <div class="row-fluid tab-accounts">
+      <div>
+        <h3 class="underlined display-5">
+          Taxable Income Analysis
+          <hr>
+          <a href="javascript:void(0);" class="info-tooltip pull-right" data-toggle="popover" title="" data-content="Balances of your USD, AUD, NZD, XBT, ETH and BCH accounts in Independent Reserve. The difference between 'Total' and 'Available' amounts corresponds to any deposits or withdrawals which are still being processed or to open limit orders you have placed on the market."
+            data-trigger="hover" data-html="true" data-placement="left" tabindex="-1" data-ir-popover="" data-original-title="Account Balance">
+            <i class="ir-icon ir-info"></i>
+          </a>
+          <span class="last-updated-control pull-right accounts-control-last-updated" data-last-updated="16:30:38">
+            <i class="ir-icon ir-warning warning-button hide" data-ir-popover="" data-original-title="" title=""></i>
+            <a href="javascript:void(0)" class="refresh-button" data-toggle="refresh-button">
+              <i class="ir-icon ir-refresh" data-ir-popover="" data-original-title="" title=""></i>
+            </a>
+          </span>
+        </h3>
+        <p class='step'>1</p>
+        <p class="lead text-center tax-lead">Select how you would classify the purpose of your investment.
+          <small class="text-muted" id='not-sure-link'>
+            <a target="_blank" href="https://www.abr.business.gov.au/EntityTypeList.aspx"> Not sure?</a>
+          </small>
+        </p>
+        <div class="text-center entity-btn-row">
+          <button *ngFor="let entity of taxEntities" [class.entity-btn-selected]="entity == currentEntity" (click)="selectEntity(entity)"
+            type="button" id='entity-btn' class="bootstrap-btn btn-outline-primary" ngbPopover="{{entity.tooltip}}" triggers="mouseenter:mouseleave"
+            popoverTitle="{{entity.name}}">
+            {{entity.name}}
+          </button>
+        </div>
+        <p title="info" class='text-center' *ngIf="currentEntity != null">Maximum eligible discount: {{currentEntity?.discount}}</p>
+        <hr>
+        <p class='step'>2</p>
+        <p class="lead text-center tax-lead">Select the tax years to be analysed.</p>
+        <div class="text-center entity-btn-row">
+          <button *ngFor="let year of dateYears" [class.entity-btn-selected]="year.selected == true" (click)="year['selected'] = !year['selected']"
+            type="button" id='entity-btn' class="bootstrap-btn btn-outline-primary">
+            {{year.year-1}} - {{year.year}}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="alert-box">
+      <p *ngFor="let alert of alerts">
+        <ngb-alert [type]="alert.type" (close)="closeAlert(alert)">{{ alert.message }}</ngb-alert>
+      </p>
+    </div>
+    <br>
+    <button class='btn mb-4 btn-primary btn-lg btn-block text-center analyse-button' href="javacscript:;" (click)="showData()"
+      [hidden]="loadingData">Analyse</button>
+    <div [hidden]="!loadingData" class="showbox">
+      <div class="loader">
+        <svg class="circular" viewBox="25 25 50 50">
+          <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
+      </div>
+    </div>
+    <hr>
+    <!-- <h4 class='tax-subheader' [hidden]="!processed" >total taxable income/(loss): {{ taxableIncome | currency }}</h4> -->
+    <nvd3 hidden [options]="options" [data]="data"></nvd3>
+    <p class='step'>3</p>
+    <p class="lead text-center tax-lead mb-5">View your results.
+    </p>
+    <ul [hidden]="!processed" *ngIf="!loadingData" class="nav nav-tabs nav-fill">
+      <li class="nav-item nav-coin-filter">
+        <a class="nav-link" [ngClass]="{'active': !isViewLimited}" (click)="allView()" href="javascript:;">All</a>
+      </li>
+      <li class="nav-item nav-coin-filter">
+        <a class="nav-link" [ngClass]="{'active': limitView === 'Xbt'}" (click)="switchCoinView('Xbt')" href="javascript:;">Bitcoin&nbsp;
+          <img class="filter-logo" src="/assets/images/bitcoin-logo.png" alt="">
+        </a>
+      </li>
+      <li class="nav-item nav-coin-filter">
+        <a class="nav-link" [ngClass]="{'active':limitView === 'Eth'}" (click)="switchCoinView('Eth')" href="javascript:;">Ethereum
+          <img class="filter-logo-eth" src="/assets/images/eth-logo.png" alt="">
+        </a>
+      </li>
+      <li class="nav-item nav-coin-filter">
+        <a class="nav-link" [ngClass]="{'active':limitView === 'Bch'}" (click)="switchCoinView('Bch')" href="javascript:;">Bitcoin Cash&nbsp;
+          <img class="filter-logo" src="/assets/images/bcash-logo.jpg" alt="">
+        </a>
+      </li>
+    </ul>
+    <div *ngIf="!loadingData" [hidden]="!processed" class="table-responsive">
+      <div class="tx-table-header">
+        <table cellpadding="0" cellspacing="0" border="0" class="table table-sm tx-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Coin</th>
+              <th>Type</th>
+              <th>CGT Amount - Gain/(loss)</th>
+              <th>Acquisition</th>
+              <th>Disposal</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <div class="tx-table-body">
+        <table cellpadding="0" cellspacing="0" border="0" class="table table-sm tx-table">
+          <tbody>
+            <ng-container *ngFor="let transaction of allTransactions; let i = index">
+              <tr *ngIf="!isViewLimited || transaction.PrimaryCurrencyCode === limitView">
+                <!-- <td>{{transaction}}</td> -->
+                <td>{{i+1}}</td>
+                <td>{{getLongTokenName(transaction.PrimaryCurrencyCode)}}
+                  <span class="text-muted"> ({{transaction.PrimaryCurrencyCode | uppercase }})</span>
+                </td>
+                <td class="green-row" *ngIf="transaction.gainOrLoss > 0">Gain</td>
+                <td class="red-row" *ngIf="transaction.gainOrLoss <= 0">Loss</td>
+                <td [ngClass]="{'green-row': transaction.gainOrLoss > 0, 'red-row': transaction.gainOrLoss < 0 }">
+                  {{transaction.gainOrLoss | currency }}
+                </td>
+                <td>{{transaction.CreatedTimestampUtc | date: 'medium'}}</td>
+                <td>{{transaction.DisposalTimestampUtc | date: 'medium'}}</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mt-5" [hidden]="!processed" *ngIf="!loadingData">
+      <div class="card ">
+        <div class="tax-summary card-body">
+          <ul [hidden]="!processed" class="nav nav-pills nav-fill mb-3">
+            <li class="nav-item nav-coin-filter" *ngFor="let year of yearSelectedInfo">
+              <a class="nav-link" [ngClass]="{'active': year === selectedViewYear}" (click)="selectedViewYear = year" href="javascript:;">Tax Summary: {{year['year']}}</a>
+            </li>
+          </ul>
+          <div *ngIf="selectedViewYear" class="mb-3 mt-5">
+            <p class="taxViewPerYear">CGT Gains (No Discount):
+              <span class="pull-right cgt-gains-no-discount"> {{selectedViewYear?.cgtGainsNoDiscount | currency }}</span>
+            </p>
+            <p class="taxViewPerYear">CGT Gains (Discount):
+              <span class="pull-right cgt-gains-discount"> {{selectedViewYear?.cgtGainsDiscount | currency }}</span>
+            </p>
+            <p class="taxViewPerYear">CGT Losses:
+              <span class="pull-right cgt-losses"> {{selectedViewYear?.cgtLosses | currency }}</span>
+            </p>
+            <p class="taxViewPerYear">Total:
+              <span class="pull-right"> {{selectedViewYear?.total | currency }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class='btn mb-4 btn-outline-warning btn-lg btn-block text-center report-button' href="javacscript:;" [hidden]="!processed">Download PDF Report</button>
+  </div>
+  <p class="text-center tax-entity-alert">
+    <ngb-alert [dismissible]="false" type="warning"  *ngIf="disclaimer">
+      <h5 class='text-center'>DISCLAIMER</h5>
+      {{disclaimer}}
+      <p>
+        <a href="{{currentEntity?.url}}">Read More</a>
+      </p>
+    </ngb-alert>
+  </p>
