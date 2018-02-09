@@ -4,7 +4,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 It currently emulates both Independent Reserve and BTC Markets with a potential implementation of KPMG's Cryptonite API. 
 This is purely the frontend and node backend which interfaces with the API. 
 
-![Architecture Diagram](/blob/master/Cryptonite%20Architecture%20Diagram.jpg "Architecture Diagram")
+![Architecture Diagram](http://13.210.80.159/robbie/cryptonite-demo/blob/master/Cryptonite%20Architecture%20Diagram.jpg "Architecture Diagram")
 ## Getting Started
 
 1. Clone this repository to your desktop
