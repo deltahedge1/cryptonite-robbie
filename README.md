@@ -1,10 +1,25 @@
-# Cryptoniteapp
+# Cryptonite App - Client Emulation
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.1.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.1. 
+It currently emulates both Independent Reserve and BTC Markets with a potential implementation of KPMG's Cryptonite API. 
+## Getting Started
 
-## Development server
+1. Clone this repository to your desktop
+2. Navigate to the home directory /cryptonite, and run `npm install`
+3. Navigate to /cryptonite/server and run `npm install`
+4. Run `node index.js` in /cryptonite/server to start the node server
+5. Run `ng serve` in /cryptonite/ for a dev server. Navigate to `http:localhost:4200/`. The app wil automatically reload if you change any of the source files. 
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Deployment
+
+The app is deployed at 54.66.176.133.
+In order to redeploy an updated version, follow these steps:
+1. SSH in to the VM with the appropriate private key. User is 'ubuntu'. 
+2. `cd ./cryptonite/cryptonite/`
+3. `sudo pm2 stop ./index.js`
+4. Pull in the updated repository from your desired source (i.e. here)
+5. `ng build`
+6. `sudo pm2 start ./index.js`
 
 ## Code scaffolding
 
